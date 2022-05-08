@@ -9,9 +9,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+
 
 
 Route::group(['middleware' => 'guest'], function () {
@@ -31,5 +29,9 @@ Route::post('/email/verification-notification', [EmailVerificationNotificationCo
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+    Route::get('/me', [AuthenticatedSessionController::class, 'show'])->name('me');
 });
 
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});

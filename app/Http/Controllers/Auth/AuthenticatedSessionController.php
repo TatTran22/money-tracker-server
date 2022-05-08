@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -26,10 +27,11 @@ class AuthenticatedSessionController extends Controller
             /* @var User $user */
             $user = User::where('email', $request->email)->first();
 
+            if (!$user) {
+                return $this->respondWithError('User not found', Response::HTTP_NOT_FOUND);
+            }
             if (!Hash::check($request->password, $user->password, [])) {
-                throw ValidationException::withMessages([
-                    'password' => ['The provided password is invalid.'],
-                ]);
+                return $this->respondWithError('Invalid credentials', Response::HTTP_UNAUTHORIZED);
             }
             $tokenResult = $user->createToken('authToken');
             $tokenResult->accessToken->update([
@@ -38,13 +40,15 @@ class AuthenticatedSessionController extends Controller
                 'expires_at' => now()->addMinutes(config('sanctum.expiration')),
             ]);
 
+            $user->tokens()->where('expires_at', '<', Carbon::now())->delete();
+
             return $this->respond([
                 'token' => $tokenResult->plainTextToken,
                 'token_type' => 'Bearer',
                 'expires_in' => Carbon::parse($tokenResult->accessToken->expires_at)->diffInSeconds(now()),
             ], 201);
-        } catch (ValidationException $e) {
-            return $this->respondWithError($e->getMessage(), $e->status);
+        } catch (\Exception $e) {
+            return $this->respondWithError($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -58,7 +62,17 @@ class AuthenticatedSessionController extends Controller
 
             return $this->respond([], 204);
         } catch (\Exception $e) {
-            return $this->respondWithError($e->getMessage(), 500);
+            return $this->respondWithError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show()
+    {
+        return $this->respond([
+            'data' => Auth::user()
+        ]);
     }
 }
