@@ -54,7 +54,8 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'http://localhost:8866'),
+    'frontend_url' => env('FRONTEND_URL', 'http://localhost:8888'),
 
     'asset_url' => env('ASSET_URL'),
 
@@ -69,7 +70,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => env('APP_TIMEZONE', 'UTC'),
 
     /*
     |--------------------------------------------------------------------------

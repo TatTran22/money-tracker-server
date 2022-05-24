@@ -5,12 +5,11 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -28,16 +27,18 @@ class AuthenticatedSessionController extends Controller
             $user = User::where('email', $request->email)->first();
 
             if (!$user) {
-                return $this->respondWithError('User not found', Response::HTTP_NOT_FOUND);
+                return $this->respondWithError('User not found', ResponseAlias::HTTP_NOT_FOUND);
             }
+
             if (!Hash::check($request->password, $user->password, [])) {
-                return $this->respondWithError('Invalid credentials', Response::HTTP_UNAUTHORIZED);
+                return $this->respondWithError('Invalid credentials', ResponseAlias::HTTP_UNAUTHORIZED);
             }
+
             $tokenResult = $user->createToken('authToken');
             $tokenResult->accessToken->update([
                 'ip_address' => $request->ip(),
                 'user_agent' => $request->userAgent(),
-                'expires_at' => now()->addMinutes(config('sanctum.expiration')),
+                'expires_at' => Carbon::now()->addMinutes(config('sanctum.expiration'))
             ]);
 
             $user->tokens()->where('expires_at', '<', Carbon::now())->delete();
@@ -46,9 +47,10 @@ class AuthenticatedSessionController extends Controller
                 'token' => $tokenResult->plainTextToken,
                 'token_type' => 'Bearer',
                 'expires_in' => Carbon::parse($tokenResult->accessToken->expires_at)->diffInSeconds(now()),
+                'user' => $user
             ], 201);
         } catch (\Exception $e) {
-            return $this->respondWithError($e->getMessage(), Response::HTTP_BAD_REQUEST);
+            return $this->respondWithError($e->getMessage());
         }
     }
 
@@ -62,7 +64,7 @@ class AuthenticatedSessionController extends Controller
 
             return $this->respond([], 204);
         } catch (\Exception $e) {
-            return $this->respondWithError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->respondWithError($e->getMessage(), ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
