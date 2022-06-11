@@ -11,16 +11,22 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('users', static function (Blueprint $table) {
             $table->id();
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->string('uuid')->unique();
-            $table->string('email')->unique();
+            $table->string('first_name', 40)->nullable();
+            $table->string('last_name', 40)->nullable();
+            $table->string('uuid', 36)->unique();
+            $table->string('username', 40)->unique()->comment('Username for login');
+            $table->string('email')->unique()->comment('Email address for login');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('avatar_url')->nullable()->comment('User avatar url');
+            $table->string('phone')->nullable()->comment('User phone');
+            $table->timestamp('phone_verified_at')->nullable()->comment('User phone verified at');
+            $table->date('birthday')->nullable()->comment('User birthday');
+            $table->string('nationality_code', 2)->nullable()->comment('User nationality');
             $table->rememberToken();
             $table->timestamps();
         });
@@ -31,7 +37,7 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('users');
     }

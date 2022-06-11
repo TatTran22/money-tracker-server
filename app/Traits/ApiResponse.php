@@ -31,7 +31,7 @@ trait ApiResponse
     protected function respondWithError(string $message, int $status = ResponseAlias::HTTP_BAD_REQUEST, array $headers = []): JsonResponse
     {
         return $this->respond([
-            'error' => [
+            'errors' => [
                 'message' => $message,
                 'status_code' => $status,
             ],

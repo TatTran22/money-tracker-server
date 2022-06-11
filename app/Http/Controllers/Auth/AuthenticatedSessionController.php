@@ -42,13 +42,14 @@ class AuthenticatedSessionController extends Controller
             ]);
 
             $user->tokens()->where('expires_at', '<', Carbon::now())->delete();
+            Auth::login($user);
 
             return $this->respond([
                 'token' => $tokenResult->plainTextToken,
                 'token_type' => 'Bearer',
                 'expires_in' => Carbon::parse($tokenResult->accessToken->expires_at)->diffInSeconds(now()),
                 'user' => $user
-            ], 201);
+            ]);
         } catch (\Exception $e) {
             return $this->respondWithError($e->getMessage());
         }

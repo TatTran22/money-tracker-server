@@ -23,8 +23,14 @@ class User extends Authenticatable implements MustVerifyEmail
         'first_name',
         'last_name',
         'uuid',
+        'username',
         'email',
         'password',
+        'avatar_url',
+        'country',
+        'city',
+        'phone',
+        'nationality_code',
     ];
 
     /**
@@ -44,6 +50,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'phone_verified_at' => 'datetime',
     ];
 
 }
