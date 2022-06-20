@@ -11,12 +11,13 @@ use Illuminate\Support\Facades\Auth;
 class ReturnIfAuthenticated
 {
     use ApiResponse;
+
     /**
      * Handle an incoming request.
      *
      * @param Request $request
-     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @param  string|null  ...$guards
+     * @param \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
+     * @param string|null ...$guards
      * @return JsonResponse
      */
     public function handle(Request $request, Closure $next, ...$guards)
@@ -25,7 +26,7 @@ class ReturnIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return $this->respondWithError('You are already logged in.', 401);
+                return $this->respondWithError('You are already logged in.', Response::HTTP_FORBIDDEN);
             }
         }
 

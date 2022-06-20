@@ -1,0 +1,86 @@
+{
+  "version" : "1.2",
+  "profiles" : [ {
+    "id" : "6b82e3c0-bb77-4518-a773-3ff984901f99",
+    "name" : "Laravel (PHP, BLADE)",
+    "keyNamingPattern" : "SNAKE_CASE_PATTERN",
+    "sink" : {
+      "id" : "6f8770e5-91df-445a-86f4-7204b4d5b546",
+      "type" : "namespaced",
+      "translationsDirectory" : "$PROJECT_DIR$/lang",
+      "fileType" : "php",
+      "defaultLocale" : "en",
+      "namespaces" : [ "auth", "pagination", "passwords", "validation" ],
+      "outputFilenameTemplate" : "%locale%/%namespace%.php",
+      "nestingType" : "DOT",
+      "placeholderFormatterName" : "LARAVEL"
+    },
+    "sources" : [ {
+      "id" : "9824c491-98da-4c03-aec3-1ffa3399b43e",
+      "type" : "php",
+      "scopeName" : "i18n Ally: Laravel/PHP source",
+      "scopePattern" : "file[money-tracker-server]:app//*&&!file[money-tracker-server]:app/Broadcasting//*&&!file[money-tracker-server]:app/Console//*&&!file[money-tracker-server]:app/Events//*&&!file[money-tracker-server]:app/Exceptions//*&&!file[money-tracker-server]:app/Models//*&&!file[money-tracker-server]:app/Providers//*",
+      "defaultReplacementTemplate" : "trans('%namespace%.%key%', %map%)",
+      "recognizedReplacementTemplates" : [ ],
+      "skipDefaultNamespace" : false,
+      "sprintfMode" : false
+    }, {
+      "id" : "e73bf93d-3bc3-459d-bf21-7cbd863335bc",
+      "type" : "blade",
+      "scopeName" : "i18n Ally: Laravel/Blade templates",
+      "scopePattern" : "file[money-tracker-server]:resources/views//*",
+      "defaultReplacementTemplate" : "trans('%namespace%.%key%', %map%)",
+      "attributeReplacementTemplate" : "",
+      "inlineTagsReplacementTemplate" : "",
+      "recognizedReplacementTemplates" : [ ],
+      "inlineTagNames" : [ "a", "abbr", "acronym", "b", "bdi", "bdo", "big", "br", "cite", "code", "data", "del", "dfn", "em", "i", "img", "input", "ins", "kbd", "label", "mark", "meter", "output", "progress", "q", "ruby", "s", "samp", "slot", "small", "span", "strong", "sub", "sup", "time", "u", "tt", "var", "wbr" ],
+      "translatableAttributeNames" : [ "title", "alt", "placeholder", "label", "aria-label" ],
+      "skipDefaultNamespace" : false
+    } ]
+  }, {
+    "id" : "6e17b7df-d95e-4241-897a-65763b27dad7",
+    "name" : "Symfony (PHP, TWIG)",
+    "keyNamingPattern" : "SNAKE_CASE_PATTERN",
+    "sink" : {
+      "id" : "ebf41cdb-ceed-410c-bc47-406ea62a7609",
+      "type" : "namespaced",
+      "translationsDirectory" : "$PROJECT_DIR$/lang",
+      "fileType" : "php",
+      "defaultLocale" : "en",
+      "namespaces" : [ "auth", "pagination", "passwords", "validation" ],
+      "outputFilenameTemplate" : "%locale%/%namespace%.php",
+      "nestingType" : "DOT",
+      "placeholderFormatterName" : "SYMFONY_REPLACEMENT"
+    },
+    "sources" : [ {
+      "id" : "a77d778c-af1a-46bb-abda-36f121b3f2d9",
+      "type" : "php",
+      "scopeName" : "i18n Ally: Symfony/PHP source",
+      "scopePattern" : "file[money-tracker-server]:src//*&&!file[money-tracker-server]:src/DataFixtures//*",
+      "defaultReplacementTemplate" : "$this->translator->trans('%key%', %map%, '%namespace%')",
+      "recognizedReplacementTemplates" : [ ],
+      "skipDefaultNamespace" : true,
+      "sprintfMode" : false
+    }, {
+      "id" : "002cfff0-19c8-4bca-93e0-45430dcdff3e",
+      "type" : "twig",
+      "scopeName" : "i18n Ally: Symfony/Twig templates",
+      "scopePattern" : "file[money-tracker-server]:templates//*",
+      "defaultReplacementTemplate" : "trans(%map%, '%namespace%')",
+      "attributeReplacementTemplate" : "",
+      "inlineTagsReplacementTemplate" : "trans(%map%, '%namespace%')|raw",
+      "recognizedReplacementTemplates" : [ ],
+      "inlineTagNames" : [ "a", "abbr", "acronym", "b", "bdi", "bdo", "big", "br", "cite", "code", "data", "del", "dfn", "em", "i", "img", "input", "ins", "kbd", "label", "mark", "meter", "output", "progress", "q", "ruby", "s", "samp", "slot", "small", "span", "strong", "sub", "sup", "time", "u", "tt", "var", "wbr" ],
+      "translatableAttributeNames" : [ "title", "alt", "placeholder", "label", "aria-label" ],
+      "skipDefaultNamespace" : true
+    } ]
+  } ],
+  "ignores" : {
+    "valuesInProject" : [ "use strict" ],
+    "valuesInFile" : { },
+    "filesInProject" : [ ],
+    "unignoredFunctionNames" : [ ],
+    "unignoredFunctionArguments" : { },
+    "ignoredArrayKeys" : [ "class", "selector", "template", "middleware", "layout", "el", "component", "type", "name", "id", "key", "sql", "query", "dateFormat", "date", "condition" ]
+  }
+}

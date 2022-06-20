@@ -34,22 +34,12 @@ class AuthenticatedSessionController extends Controller
                 return $this->respondWithError('Invalid credentials', ResponseAlias::HTTP_UNAUTHORIZED);
             }
 
-            $tokenResult = $user->createToken('authToken');
-            $tokenResult->accessToken->update([
-                'ip_address' => $request->ip(),
-                'user_agent' => $request->userAgent(),
-                'expires_at' => Carbon::now()->addMinutes(config('sanctum.expiration'))
-            ]);
-
-            $user->tokens()->where('expires_at', '<', Carbon::now())->delete();
             Auth::login($user);
 
             return $this->respond([
-                'token' => $tokenResult->plainTextToken,
-                'token_type' => 'Bearer',
-                'expires_in' => Carbon::parse($tokenResult->accessToken->expires_at)->diffInSeconds(now()),
-                'user' => $user
-            ]);
+                'token' => $this->getToken($request, $user),
+                'user' => $user,
+            ], ResponseAlias::HTTP_ACCEPTED);
         } catch (\Exception $e) {
             return $this->respondWithError($e->getMessage());
         }

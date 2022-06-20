@@ -29,6 +29,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/me', [AuthenticatedSessionController::class, 'show'])->name('me');
 });
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });

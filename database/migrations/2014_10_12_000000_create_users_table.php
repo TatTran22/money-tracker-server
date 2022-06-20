@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string('first_name', 40)->nullable();
             $table->string('last_name', 40)->nullable();
             $table->string('uuid', 36)->unique();
-            $table->string('username', 40)->unique()->comment('Username for login');
+            $table->string('nickname', 40)->nullable()->unique();
             $table->string('email')->unique()->comment('Email address for login');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

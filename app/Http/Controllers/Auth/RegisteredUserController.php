@@ -26,29 +26,34 @@ class RegisteredUserController extends Controller
     public function store(Request $request)
     {
         try {
-            $request->validate([
+            $data = $request->validate([
                 'first_name' => ['required', 'string', 'max:255'],
                 'last_name' => ['required', 'string', 'max:255'],
-                'username' => ['required', 'string', 'max:255', 'unique:users'],
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-                'password' => ['required', 'confirmed', Rules\Password::min(8)->letters()->mixedCase()->numbers()->symbols()->uncompromised()],
+                'password' => ['required', 'confirmed', Rules\Password::min(8)],
             ]);
 
+            $nickname = Str::slug($data['first_name'] . ' ' . $data['last_name']);
+            if (User::where('nickname', $nickname)->exists()) {
+                $nickname .= '-' . Str::random(4);
+            }
+
             $user = User::create([
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'username' => $request->username,
-                'uuid' => Str::orderedUuid(),
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
+                'first_name' => $data['first_name'],
+                'last_name' => $data['last_name'],
+                'nickname' => $nickname,
+                'email' => $data['email'],
+                'uuid' => Str::uuid(),
+                'password' => Hash::make($data['password']),
             ]);
 
             event(new Registered($user));
 
             Auth::login($user);
             return $this->respond([
+                'token' => $this->getToken($request, $user),
                 'user' => $user,
-            ]);
+            ], Response::HTTP_CREATED);
         } catch (ValidationException $e) {
             return $this->respond([
                 'errors' => $e->errors(),
