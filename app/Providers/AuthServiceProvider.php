@@ -44,7 +44,7 @@ class AuthServiceProvider extends ServiceProvider
                 ]
             );
 
-            return $frontendUrl . '?verify_url=' . urlencode($verifyUrl);
+            return $frontendUrl . '/verify-email?verify_url=' . urlencode($verifyUrl);
         });
 
         ResetPassword::createUrlUsing(function ($notifiable, $token) {

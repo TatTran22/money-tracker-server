@@ -30,7 +30,7 @@ class RegisteredUserController extends Controller
                 'first_name' => ['required', 'string', 'max:255'],
                 'last_name' => ['required', 'string', 'max:255'],
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-                'password' => ['required', 'confirmed', Rules\Password::min(8)],
+                'password' => ['required', 'confirmed', Rules\Password::min(8)->letters()->mixedCase()->numbers()->symbols()->uncompromised()],
             ]);
 
             $nickname = Str::slug($data['first_name'] . ' ' . $data['last_name']);

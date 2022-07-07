@@ -5,8 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
-use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
@@ -16,8 +15,8 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      *
-     * @param \App\Http\Requests\Auth\LoginRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param LoginRequest $request
+     * @return JsonResponse
      */
     public function store(LoginRequest $request)
     {
@@ -31,10 +30,10 @@ class AuthenticatedSessionController extends Controller
             }
 
             if (!Hash::check($request->password, $user->password, [])) {
-                return $this->respondWithError('Invalid credentials', ResponseAlias::HTTP_UNAUTHORIZED);
+                return $this->respondWithError(__('auth.failed'), ResponseAlias::HTTP_UNAUTHORIZED);
             }
 
-            Auth::login($user);
+            Auth::login($user, $request->input('remember', false));
 
             return $this->respond([
                 'token' => $this->getToken($request, $user),
@@ -46,9 +45,9 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function destroy()
+    public function destroy(): JsonResponse
     {
         try {
             Auth::user()->currentAccessToken()->delete();
@@ -60,12 +59,12 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function show()
+    public function show(): JsonResponse
     {
         return $this->respond([
-            'data' => Auth::user()
+            'user' => Auth::user()
         ]);
     }
 }

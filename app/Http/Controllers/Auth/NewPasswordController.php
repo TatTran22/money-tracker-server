@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
@@ -48,7 +49,7 @@ class NewPasswordController extends Controller
                     'email' => [__($status)],
                 ]);
             }
-            return $this->respond(['status' => __($status)]);
+            return $this->respond(['message' => __($status)], Response::HTTP_ACCEPTED);
         } catch (ValidationException $e) {
             return $this->respondWithError($e->getMessage(), $e->status);
         } catch (\Exception $e) {

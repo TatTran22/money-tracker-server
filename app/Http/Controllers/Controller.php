@@ -7,10 +7,10 @@ use App\Traits\ApiResponse;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Carbon;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use JetBrains\PhpStorm\ArrayShape;
 
 class Controller extends BaseController
@@ -28,7 +28,7 @@ class Controller extends BaseController
         $tokenResult->accessToken->update([
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
-            'expires_at' => Carbon::now()->addMinutes(config('sanctum.expiration'))
+            'expires_at' => Carbon::now()->addMinutes(Config::get('sanctum.expiration', 1400))
         ]);
 
         $user->tokens()->where('expires_at', '<', Carbon::now())->delete();
